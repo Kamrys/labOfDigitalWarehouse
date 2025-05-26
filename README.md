@@ -1,2 +1,2 @@
 # labOfDigitalWarehouse
-##这是一个关于SpringBoot的数字识别仓库入库管理系统合作仓库
+## 这是一个关于SpringBoot的数字识别仓库入库管理系统合作仓库
