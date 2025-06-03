@@ -611,18 +611,56 @@ export default {
                 }
                 // 百度OCR返回words_result数组
                 let name = '';
+                let count = '';
+                let name_of_storage = '';
+                let type_of_goods = '';
+                let remark = '';
+                let sign_of_storage = 0;
+                let sign_of_type = 0;
+                // let name1='';
                 if (data.words_result && data.words_result.length > 0) {
-                    name = data.words_result[0].words;
+                    // name = data.words_result[0].words;
+                    name=splitString(data.words_result[0].words,'：')[1];
+                    count=splitString(data.words_result[1].words,'：')[1];
+                    name_of_storage=splitString(data.words_result[2].words,'：')[1];
+                    type_of_goods=splitString(data.words_result[3].words,'：')[1];
+                    remark=splitString(data.words_result[4].words,'：')[1];
+
+                    const found = this.storageData.find(item => item.name === name_of_storage);
+                    if (found) {
+                      this.form.storage = found.id;
+                      sign_of_storage=1;
+                    } else {
+                      this.$refs.form.resetFields();
+                      this.$message.warning(`未找到名为 ${name_of_storage} 的仓库`);
+                      return;
+                    }
+                    const found1 = this.goodstypeData.find(item => item.name === type_of_goods);
+                    if (found1){
+                      this.form.goodstype = found1.id;
+                      sign_of_type=1;
+                    }else {
+                      this.$refs.form.resetFields();
+                      this.$message.warning(`未找到名为 ${type_of_goods} 的货物分类`);
+                      return;
+                    }
+                    for(let i=5;i<data.words_result.length;i++){
+                      remark=remark+data.words_result[i].words;
+                    }
                 } else if (data.words_result) {
                     name = data.words_result;
                 } else if (data.words) {
                     name = data.words;
                 }
-                if (name) {
+                if (name && count && sign_of_storage && sign_of_type) {
                     this.form.name = name;
+                    this.form.count=count;
+
+                    this.form.remark=remark;
+                    // this.form.=
                     this.$message.success('识别成功，物品名称已自动填入');
                 } else {
-                    this.$message.warning('未识别到有效文字');
+                    // this.$message.warning('非本公司出入库标签');
                 }
             }).catch(() => {
                 this.$message.error('图片识别失败');
@@ -637,6 +675,21 @@ export default {
         this.loadGoodsType();
     }
 }
+function splitString(str, delimiter) {
+  return str.split(delimiter);
+}
+// function findMatch(arr, searchString) {
+//   return arr.find(item => item === searchString);
+// }
+// function changeStorageByName(storageName) {
+//   const found = this.storageData.find(item => item.name === storageName);
+//   if (found) {
+//     this.form.storage = found.id;
+//   } else {
+//     // 没有找到，可以设置一个默认值或者给出提示
+//     console.warn(`未找到名为 ${storageName} 的仓库`);
+//   }
+// }
 </script>
 
 <style scoped>
