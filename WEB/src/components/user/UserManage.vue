@@ -126,12 +126,6 @@
                       <el-radio label="0">女</el-radio>
                   </el-radio-group>
               </el-form-item>
-            <el-form-item label="身份">
-              <el-radio-group v-model="form.roleId">
-                <el-radio label="1">管理员</el-radio>
-                <el-radio label="2">用户</el-radio>
-              </el-radio-group>
-            </el-form-item>
               <el-form-item label="电话:" prop="phone">
                   <el-col :span="20">
                       <el-input v-model="form.phone"></el-input>

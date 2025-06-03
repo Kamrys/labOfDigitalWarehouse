@@ -123,6 +123,17 @@
                         <el-input type="textarea" placeholder="不能超过200字符" v-model="form.remark"></el-input>
                     </el-col>
                 </el-form-item>
+                <el-form-item label="物品图片">
+                    <el-upload
+                        class="upload-demo"
+                        action=""
+                        :http-request="handleOcrUpload"
+                        :show-file-list="false"
+                        accept="image/*"
+                    >
+                        <el-button size="small" type="primary">点击上传图片识别名称</el-button>
+                    </el-upload>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="centerDialogVisible = false">取 消</el-button>
@@ -577,7 +588,46 @@ export default {
         handleRadioCurrentChange(val) {
             // console.log("单选===", val);
             this.currentRow = val;
-        }
+        },
+        /**
+         * OCR图片上传并识别
+         */
+        handleOcrUpload(param) {
+            const formData = new FormData();
+            formData.append('file', param.file);
+            this.$axios.post(this.$httpUrl + '/ocr/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(res => {
+                // 兼容后端返回的字符串或对象
+                let data = res.data;
+                if (typeof data === 'string') {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (e) {
+                        console.log("error")
+                    }
+                }
+                // 百度OCR返回words_result数组
+                let name = '';
+                if (data.words_result && data.words_result.length > 0) {
+                    name = data.words_result[0].words;
+                } else if (data.words_result) {
+                    name = data.words_result;
+                } else if (data.words) {
+                    name = data.words;
+                }
+                if (name) {
+                    this.form.name = name;
+                    this.$message.success('识别成功，物品名称已自动填入');
+                } else {
+                    this.$message.warning('未识别到有效文字');
+                }
+            }).catch(() => {
+                this.$message.error('图片识别失败');
+            });
+        },
     },
 
     // 载入前，初始化操作

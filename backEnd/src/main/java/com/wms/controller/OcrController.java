@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -31,24 +32,33 @@ public class OcrController {
     // 选项2：通过上传文件识别（更推荐）
     @PostMapping("/ocr/upload")
     public String ocrByUpload(@RequestParam("file") MultipartFile file) {
+        Path tempFile = null;
         try {
             // 创建临时文件
             String tempFileName = "ocr_temp_" + UUID.randomUUID() +
                     getFileExtension(file.getOriginalFilename());
-            Path tempFile = Files.createTempFile(tempFileName, "");
+            tempFile = Files.createTempFile(tempFileName, "");
 
-            // 保存上传文件到临时路径
-            Files.copy(file.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
+            // 用try-with-resources确保流关闭
+            try (InputStream in = file.getInputStream()) {
+                Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            }
 
             // 调用OCR识别
             JSONObject res = ocrClient.basicGeneral(tempFile.toString(), new HashMap<>());
 
-            // 删除临时文件
-            Files.deleteIfExists(tempFile);
-
             return res.toString(2);
         } catch (IOException e) {
             return "{\"error\": \"文件处理失败: " + e.getMessage() + "\"}";
+        } finally {
+            // 最后删除临时文件
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    // 可以记录日志，但不要抛出
+                }
+            }
         }
     }
 
