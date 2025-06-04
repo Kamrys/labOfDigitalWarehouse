@@ -6,7 +6,7 @@
             <i :class="icon" @click="collapse" style="font-size: 22px;"></i>
         </div>
         <div class="hello">
-            欢迎来到管理系统
+            欢迎来到数字识别入库管理系统
         </div>
         <span style="font-size: 13px;">欢迎您：{{user.name}}</span>
         <el-dropdown>

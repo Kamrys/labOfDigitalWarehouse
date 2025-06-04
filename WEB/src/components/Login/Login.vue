@@ -1,9 +1,10 @@
 <style scoped>
 	.center {
 		width: 100%;
-		height: 100%;
+		height: 100vh;
 		background-image: url('../../assets/img/Login.jpg');
-		background-size: 100% 100%;
+		background-size: cover;
+		background-position: center;
 		background-repeat: no-repeat;
 		display: flex;
 		align-items: center;
@@ -14,6 +15,7 @@
 	h1 {
 		font-size: 30px;
 		color: black;
+		margin-bottom: 20px;
 	}
  
 	.logon {
@@ -23,7 +25,7 @@
 		/* position: relative;
 		overflow: hidden; */
 		width: 768px;
-		max-width: 100%;
+		max-width: 90%;
 		min-height: 480px;
 		margin-top: 20px;
 		display: flex;
@@ -200,7 +202,7 @@
  
 <!-- TODO 登录界面 -->
 <template>
-	<div class="center" style="width: 1707px; height: 930px;">
+	<div class="center">
 		<!-- 标题 -->
 		<h1>登录/注册</h1>
 		<!-- 

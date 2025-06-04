@@ -2,9 +2,9 @@
 <template>
     <!-- collapse:是否水平折叠收起菜单 -->
     <el-menu 
-            background-color="#545c64" 
-            text-color="#fff"
-            active-text-color="#ffd04b"
+            background-color="#304156" 
+            text-color="#bfcbd9"
+            active-text-color="#409EFF"
             style="height: 100%;"
             default-active="/Home"
             :collapse="isCollapse"
